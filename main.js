@@ -1,4 +1,4 @@
-// Sin Karkinos - Main JavaScript File (Single Page Version)
+// Sin Karkinos - Production Version
 const SinKarkinos = {
     init: function() {
         this.setupParticles();
@@ -8,152 +8,46 @@ const SinKarkinos = {
         this.setupMobileMenu();
         this.setupFadeInAnimations();
         this.setupDetectionSystem();
+        this.wakeUpSpace();  // ← ADD THIS LINE
+        
     },
-
+    
     setupParticles: function() {
-        // Monochrome constellation background configuration
         particlesJS('particles-js', {
             particles: {
-                number: {
-                    value: 200,
-                    density: {
-                        enable: true,
-                        value_area: 800
-                    }
-                },
-                color: {
-                    value: '#FFFFFF' // Pure white stars
-                },
-                shape: {
-                    type: 'circle',
-                    stroke: {
-                        width: 0,
-                        color: '#000000'
-                    }
-                },
-                opacity: {
-                    value: 0.8,
-                    random: true,
-                    anim: {
-                        enable: true,
-                        speed: 1,
-                        opacity_min: 0.3,
-                        sync: false
-                    }
-                },
-                size: {
-                    value: 2,
-                    random: true,
-                    anim: {
-                        enable: true,
-                        speed: 2,
-                        size_min: 0.5,
-                        sync: false
-                    }
-                },
-                line_linked: {
-                    enable: true,
-                    distance: 120,
-                    color: '#FFFFFF',
-                    opacity: 0.2,
-                    width: 1,
-                    consent: {
-                        distance: 80,
-                        opacity: 0.3
-                    }
-                },
-                move: {
-                    enable: true,
-                    speed: 0.5,
-                    direction: 'none',
-                    random: true,
-                    straight: false,
-                    out_mode: 'out',
-                    bounce: false,
-                    attract: {
-                        enable: true,
-                        rotateX: 600,
-                        rotateY: 1200
-                    }
-                }
+                number: { value: 200, density: { enable: true, value_area: 800 } },
+                color: { value: '#FFFFFF' },
+                shape: { type: 'circle', stroke: { width: 0, color: '#000000' } },
+                opacity: { value: 0.8, random: true, anim: { enable: true, speed: 1, opacity_min: 0.3, sync: false } },
+                size: { value: 2, random: true, anim: { enable: true, speed: 2, size_min: 0.5, sync: false } },
+                line_linked: { enable: true, distance: 120, color: '#FFFFFF', opacity: 0.2, width: 1 },
+                move: { enable: true, speed: 0.5, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false }
             },
             interactivity: {
                 detect_on: 'canvas',
-                events: {
-                    onhover: {
-                        enable: true,
-                        mode: 'repulse'
-                    },
-                    onclick: {
-                        enable: true,
-                        mode: 'push'
-                    },
-                    resize: true
-                },
-                modes: {
-                    grab: {
-                        distance: 400,
-                        line_linked: {
-                            opacity: 1
-                        }
-                    },
-                    bubble: {
-                        distance: 400,
-                        size: 40,
-                        duration: 2,
-                        opacity: 8,
-                        speed: 3
-                    },
-                    repulse: {
-                        distance: 150,
-                        duration: 0.4
-                    },
-                    push: {
-                        particles_nb: 4
-                    },
-                    remove: {
-                        particles_nb: 2
-                    }
-                }
+                events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' }, resize: true },
+                modes: { repulse: { distance: 150, duration: 0.4 }, push: { particles_nb: 4 } }
             },
             retina_detect: true
         });
     },
 
     setupTypewriter: function() {
-        // Typewriter effect for hero title
-        const typed = new Typed('#typed-text', {
-            strings: [
-                'The Future of Detection',
-                'AI-Powered Medicine',
-                'Sin Karkinos'
-            ],
-            typeSpeed: 80,
-            backSpeed: 50,
-            backDelay: 2000,
-            startDelay: 500,
-            loop: true,
-            showCursor: true,
-            cursorChar: '|'
+        new Typed('#typed-text', {
+            strings: ['The Future of Detection', 'AI-Powered Medicine', 'Sin Karkinos'],
+            typeSpeed: 80, backSpeed: 50, backDelay: 2000, startDelay: 500, loop: true, cursorChar: '|'
         });
     },
 
     setupScrollAnimations: function() {
-        // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             });
         });
 
-        // Update active navigation on scroll
         window.addEventListener('scroll', () => {
             const sections = document.querySelectorAll('.section');
             const navLinks = document.querySelectorAll('.nav-link');
@@ -170,86 +64,55 @@ const SinKarkinos = {
                 }
             });
 
-            // Update navigation links
             navLinks.forEach(link => {
                 link.classList.remove('active');
-                if (link.getAttribute('href') === `#${current}`) {
-                    link.classList.add('active');
-                }
+                if (link.getAttribute('href') === `#${current}`) link.classList.add('active');
             });
 
-            // Update scroll dots
             scrollDots.forEach(dot => {
                 dot.classList.remove('active');
-                if (dot.getAttribute('data-section') === current) {
-                    dot.classList.add('active');
-                }
+                if (dot.getAttribute('data-section') === current) dot.classList.add('active');
             });
         });
     },
 
     setupNavigation: function() {
-        // Mobile menu functionality
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
 
         if (mobileMenuBtn && mobileMenu) {
-            mobileMenuBtn.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-            });
-
-            // Close mobile menu when clicking on a link
-            const mobileLinks = mobileMenu.querySelectorAll('a');
-            mobileLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    mobileMenu.classList.add('hidden');
-                });
+            mobileMenuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
             });
         }
     },
 
     setupMobileMenu: function() {
-        // Handle mobile menu visibility on resize
         window.addEventListener('resize', () => {
             const mobileMenu = document.getElementById('mobile-menu');
-            if (window.innerWidth >= 768) {
-                mobileMenu.classList.add('hidden');
-            }
+            if (window.innerWidth >= 768) mobileMenu.classList.add('hidden');
         });
     },
 
     setupFadeInAnimations: function() {
-        // Intersection Observer for fade-in animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
+            entries.forEach(entry => entry.isIntersecting && entry.target.classList.add('visible'));
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
-        // Observe all fade-in elements
-        document.querySelectorAll('.fade-in').forEach(el => {
-            observer.observe(el);
-        });
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
     },
 
     setupDetectionSystem: function() {
-        // Initialize detection system after DOM is loaded
-        if (document.getElementById('mri-upload')) {
-            DetectionSystem.init();
-        }
+        if (document.getElementById('mri-upload')) DetectionSystem.init();
     }
 };
 
-// MRI Upload and Detection Simulation
+// MRI Detection System - Production
 const DetectionSystem = {
     currentFile: null,
+    // CHANGE THIS TO YOUR HUGGING FACE SPACE URL
+    apiEndpoint: 'https://huggingface.co/spaces/luhoan/SegFormerB0_MRI',
     
     init: function() {
         this.setupFileUpload();
@@ -259,107 +122,88 @@ const DetectionSystem = {
     setupFileUpload: function() {
         const fileInput = document.getElementById('mri-upload');
         const uploadArea = document.getElementById('upload-area');
-        const previewImage = document.getElementById('mri-preview');
 
-        if (fileInput && uploadArea && previewImage) {
-            // Click to upload
-            uploadArea.addEventListener('click', () => {
-                fileInput.click();
-            });
-
-            // Drag and drop
-            uploadArea.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                uploadArea.classList.add('dragover');
-            });
-
-            uploadArea.addEventListener('dragleave', () => {
-                uploadArea.classList.remove('dragover');
-            });
-
+        if (fileInput && uploadArea) {
+            uploadArea.addEventListener('click', () => fileInput.click());
+            uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+            uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
             uploadArea.addEventListener('drop', (e) => {
                 e.preventDefault();
                 uploadArea.classList.remove('dragover');
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                    this.handleFileUpload(files[0]);
-                }
+                if (e.dataTransfer.files.length > 0) this.handleFileUpload(e.dataTransfer.files[0]);
             });
-
-            // File input change
             fileInput.addEventListener('change', (e) => {
-                if (e.target.files.length > 0) {
-                    this.handleFileUpload(e.target.files[0]);
-                }
+                if (e.target.files.length > 0) this.handleFileUpload(e.target.files[0]);
             });
         }
     },
 
     handleFileUpload: function(file) {
-        if (file.type.startsWith('image/')) {
-            this.currentFile = file;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const previewImage = document.getElementById('mri-preview');
-                const placeholderDiv = document.getElementById('mri-placeholder');
+        if (!file.type.startsWith('image/')) {
+            alert('Please upload a valid image file.');
+            return;
+        }
+        
+        this.currentFile = file;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const preview = document.getElementById('mri-preview');
+            const placeholder = document.getElementById('mri-placeholder');
+            
+            if (preview && placeholder) {
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+                placeholder.classList.add('hidden');
                 
-                if (previewImage && placeholderDiv) {
-                    previewImage.src = e.target.result;
-                    previewImage.classList.remove('hidden');
-                    placeholderDiv.classList.add('hidden');
-                    
-                    // Enable scan button
-                    const scanBtn = document.getElementById('scan-btn');
-                    const scanBtnText = document.getElementById('scan-btn-text');
-                    if (scanBtn) {
-                        scanBtn.disabled = false;
-                        scanBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                        scanBtnText.textContent = 'Scan MRI for Analysis';
-                    }
-                    
-                    // Update image info
+                const scanBtn = document.getElementById('scan-btn');
+                const scanBtnText = document.getElementById('scan-btn-text');
+                if (scanBtn) {
+                    scanBtn.disabled = false;
+                    scanBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    scanBtnText.textContent = 'Scan MRI for Analysis';
+                }
+                
+                this.updateImageInfo({
+                    format: file.type.split('/')[1].toUpperCase(),
+                    size: this.formatFileSize(file.size),
+                    dimensions: 'Loading...',
+                    time: new Date().toLocaleTimeString()
+                });
+                
+                const img = new Image();
+                img.onload = () => {
                     this.updateImageInfo({
                         format: file.type.split('/')[1].toUpperCase(),
                         size: this.formatFileSize(file.size),
-                        dimensions: 'Loading...',
+                        dimensions: `${img.width}×${img.height}`,
                         time: new Date().toLocaleTimeString()
                     });
-                    
-                    // Show image info
-                    const imageInfo = document.getElementById('image-info');
-                    if (imageInfo) {
-                        imageInfo.classList.remove('hidden');
-                    }
-                }
-            };
-            reader.readAsDataURL(file);
-        } else {
-            alert('Please upload a valid image file.');
-        }
+                };
+                img.src = e.target.result;
+                
+                document.getElementById('image-info')?.classList.remove('hidden');
+            }
+        };
+        reader.readAsDataURL(file);
     },
 
     setupDetectionButton: function() {
         const scanBtn = document.getElementById('scan-btn');
         if (scanBtn) {
             scanBtn.addEventListener('click', () => {
-                if (this.currentFile) {
-                    this.simulateDetection();
-                } else {
-                    alert('Please upload an MRI image first.');
-                }
+                if (this.currentFile) this.performDetection();
+                else alert('Please upload an MRI image first.');
             });
         }
     },
 
-    simulateDetection: function() {
+    performDetection: async function() {
         const scanBtn = document.getElementById('scan-btn');
         const scanBtnText = document.getElementById('scan-btn-text');
-        const resultsDiv = document.getElementById('detection-results');
         const loadingDiv = document.getElementById('loading-state');
         const progressBar = document.getElementById('progress-bar');
         const progressText = document.getElementById('progress-text');
 
-        // Show loading state
         scanBtn.disabled = true;
         scanBtnText.innerHTML = `
             <div class="flex items-center justify-center space-x-2">
@@ -367,61 +211,57 @@ const DetectionSystem = {
                 <span>Analyzing...</span>
             </div>
         `;
+        if (loadingDiv) loadingDiv.classList.remove('hidden');
 
-        if (loadingDiv) {
-            loadingDiv.classList.remove('hidden');
-        }
-
-        // Simulate progress
         let progress = 0;
         const progressInterval = setInterval(() => {
             progress += Math.random() * 15 + 5;
             if (progress > 100) progress = 100;
-            
-            if (progressBar) {
-                progressBar.style.width = progress + '%';
-            }
-            
+            if (progressBar) progressBar.style.width = progress + '%';
             if (progressText) {
-                if (progress < 30) {
-                    progressText.textContent = 'Initializing analysis...';
-                } else if (progress < 60) {
-                    progressText.textContent = 'Processing neural network layers...';
-                } else if (progress < 90) {
-                    progressText.textContent = 'Analyzing features and patterns...';
-                } else {
-                    progressText.textContent = 'Generating results...';
-                }
-            }
-            
-            if (progress >= 100) {
-                clearInterval(progressInterval);
-                setTimeout(() => {
-                    this.showResults();
-                }, 500);
+                if (progress < 30) progressText.textContent = 'Initializing neural network...';
+                else if (progress < 60) progressText.textContent = 'Processing through SegFormer layers...';
+                else if (progress < 90) progressText.textContent = 'Analyzing medical features...';
+                else progressText.textContent = 'Generating diagnosis...';
             }
         }, 100);
+
+        try {
+            const formData = new FormData();
+            formData.append('data', this.currentFile);
+            
+            const response = await fetch(this.apiEndpoint, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) throw new Error(`API error: ${response.status}`);
+
+            const result = await response.json();
+            clearInterval(progressInterval);
+            
+            if (result.error) throw new Error(result.error);
+            
+            this.showResults(result);
+            
+        } catch (error) {
+            clearInterval(progressInterval);
+            alert(`Detection failed: ${error.message}. Please ensure the backend server is running at ${this.apiEndpoint}`);
+            this.resetAnalysis();
+        }
     },
 
-    showResults: function() {
+    showResults: function(result) {
         const scanBtn = document.getElementById('scan-btn');
         const scanBtnText = document.getElementById('scan-btn-text');
         const resultsDiv = document.getElementById('detection-results');
         const loadingDiv = document.getElementById('loading-state');
 
-        // Hide loading state
-        if (loadingDiv) {
-            loadingDiv.classList.add('hidden');
-        }
+        if (loadingDiv) loadingDiv.classList.add('hidden');
 
-        // Generate mock results
-        const confidence = (Math.random() * 15 + 85).toFixed(1);
-        const detection = Math.random() > 0.3 ? 'Tumor Detected' : 'No Tumor Detected';
-        const tumorType = detection === 'Tumor Detected' ? 
-            ['Glioma', 'Meningioma', 'Pituitary Tumor'][Math.floor(Math.random() * 3)] : 
-            'N/A';
+        const detection = result.label === 'no_tumor' ? 'No Tumor Detected' : 'Tumor Detected';
+        const tumorType = result.label === 'no_tumor' ? 'N/A' : result.display_label;
 
-        // Show results
         if (resultsDiv) {
             resultsDiv.innerHTML = `
                 <div class="card rounded-xl p-6 max-w-2xl mx-auto">
@@ -433,7 +273,7 @@ const DetectionSystem = {
                         </div>
                         <div class="flex justify-between items-center">
                             <span class="text-gray-300">Confidence:</span>
-                            <span class="font-semibold text-white">${confidence}%</span>
+                            <span class="font-semibold text-white">${result.confidence}%</span>
                         </div>
                         ${detection === 'Tumor Detected' ? `
                         <div class="flex justify-between items-center">
@@ -444,7 +284,7 @@ const DetectionSystem = {
                     </div>
                     <div class="mt-6">
                         <div class="progress-bar h-3">
-                            <div class="progress-fill transition-all duration-1000" style="width: ${confidence}%"></div>
+                            <div class="progress-fill transition-all duration-1000" style="width: ${result.confidence}%"></div>
                         </div>
                         <p class="text-sm text-gray-400 mt-2 text-center">Confidence Level</p>
                     </div>
@@ -458,7 +298,6 @@ const DetectionSystem = {
             resultsDiv.classList.remove('hidden');
         }
 
-        // Reset scan button
         scanBtn.disabled = false;
         scanBtnText.textContent = 'Scan Another Image';
     },
@@ -467,26 +306,34 @@ const DetectionSystem = {
         const resultsDiv = document.getElementById('detection-results');
         const scanBtn = document.getElementById('scan-btn');
         const scanBtnText = document.getElementById('scan-btn-text');
+        const preview = document.getElementById('mri-preview');
+        const placeholder = document.getElementById('mri-placeholder');
         
-        if (resultsDiv) {
-            resultsDiv.classList.add('hidden');
+        if (resultsDiv) resultsDiv.classList.add('hidden');
+        if (scanBtn) {
+            scanBtn.disabled = true;
+            scanBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+        if (scanBtnText) scanBtnText.textContent = 'Upload Image to Enable Scan';
+        if (preview && placeholder) {
+            preview.classList.add('hidden');
+            placeholder.classList.remove('hidden');
         }
         
-        scanBtn.disabled = true;
-        scanBtnText.textContent = 'Upload Image to Enable Scan';
         this.currentFile = null;
+        document.getElementById('image-info')?.classList.add('hidden');
     },
 
     updateImageInfo: function(info) {
-        const formatElement = document.getElementById('image-format');
-        const sizeElement = document.getElementById('image-size');
-        const dimensionsElement = document.getElementById('image-dimensions');
-        const timeElement = document.getElementById('upload-time');
-
-        if (formatElement) formatElement.textContent = info.format;
-        if (sizeElement) sizeElement.textContent = info.size;
-        if (dimensionsElement) dimensionsElement.textContent = info.dimensions;
-        if (timeElement) timeElement.textContent = info.time;
+        const formatEl = document.getElementById('image-format');
+        const sizeEl = document.getElementById('image-size');
+        const dimensionsEl = document.getElementById('image-dimensions');
+        const timeEl = document.getElementById('upload-time');
+        
+        if (formatEl) formatEl.textContent = info.format;
+        if (sizeEl) sizeEl.textContent = info.size;
+        if (dimensionsEl) dimensionsEl.textContent = info.dimensions;
+        if (timeEl) timeEl.textContent = info.time;
     },
 
     formatFileSize: function(bytes) {
@@ -498,7 +345,7 @@ const DetectionSystem = {
     }
 };
 
-// Sample image data for demonstration
+// Sample images - NO resources/ prefix
 const sampleImages = {
     healthy: '0_No_Tumor.png',
     glioma: '1_Glioma_Tumor.png',
@@ -506,49 +353,22 @@ const sampleImages = {
     pituitary: '3_Pituitary_Tumor.png'
 };
 
-function loadSampleImage(type) {
-    const preview = document.getElementById('mri-preview');
-    const placeholder = document.getElementById('mri-placeholder');
-    
-    preview.src = sampleImages[type];
-    preview.classList.remove('hidden');
-    placeholder.classList.add('hidden');
-    
-    // Enable scan button
-    const scanBtn = document.getElementById('scan-btn');
-    const scanBtnText = document.getElementById('scan-btn-text');
-    if (scanBtn) {
-        scanBtn.disabled = false;
-        scanBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-        scanBtnText.textContent = 'Scan MRI for Analysis';
+async function loadSampleImage(type) {
+    try {
+        const response = await fetch(sampleImages[type]);
+        if (!response.ok) throw new Error('Sample image not found');
+        
+        const blob = await response.blob();
+        const file = new File([blob], `${type}_sample.png`, { type: 'image/png' });
+        DetectionSystem.handleFileUpload(file);
+    } catch (error) {
+        alert(`Could not load sample image: ${error.message}. Please ensure sample images are in the root directory.`);
     }
-    
-    // Update image info
-    DetectionSystem.updateImageInfo({
-        format: 'PNG',
-        size: '2.4 MB',
-        dimensions: '512×512',
-        time: new Date().toLocaleTimeString()
-    });
-    
-    // Show image info
-    const imageInfo = document.getElementById('image-info');
-    if (imageInfo) {
-        imageInfo.classList.remove('hidden');
-    }
-    
-    DetectionSystem.currentFile = { name: `${type}_sample.png`, type: 'image/png' };
 }
 
-// Global scroll function for button clicks
 function scrollToSection(sectionId) {
     const section = document.getElementById(sectionId);
-    if (section) {
-        section.scrollIntoView({ behavior: 'smooth' });
-    }
+    if (section) section.scrollIntoView({ behavior: 'smooth' });
 }
 
-// Initialize everything when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    SinKarkinos.init();
-});
+document.addEventListener('DOMContentLoaded', () => SinKarkinos.init());
