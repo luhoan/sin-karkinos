@@ -500,10 +500,10 @@ const DetectionSystem = {
 
 // Sample image data for demonstration
 const sampleImages = {
-    glioma: 'resources/mri-placeholder.png',
-    meningioma: 'resources/mri-placeholder.png',
-    pituitary: 'resources/mri-placeholder.png',
-    healthy: 'resources/mri-placeholder.png'
+    healthy: '0_No_Tumor.png',
+    glioma: '1_Glioma_Tumor.png',
+    meningioma: '2_Meningioma_Tumor.png',
+    pituitary: '3_Pituitary_Tumor.png'
 };
 
 function loadSampleImage(type) {
