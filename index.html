@@ -8,29 +8,24 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --deep-space: #0B1426;
-            --nebula-blue: #1E3A8A;
-            --starlight-white: #F8FAFC;
-            --cosmic-teal: #0F766E;
-            --neural-gold: #D97706;
-            --saturn-amber: #F59E0B;
+            --deep-black: #000000;
+            --pure-white: #FFFFFF;
+            --mit-red: #A31F34;
+            --light-gray: #F5F5F5;
+            --dark-gray: #333333;
+            --medium-gray: #666666;
         }
         
         body {
             font-family: 'Inter', sans-serif;
-            background: var(--deep-space);
-            color: var(--starlight-white);
+            background: var(--deep-black);
+            color: var(--pure-white);
             overflow-x: hidden;
-        }
-        
-        .hero-gradient {
-            background: linear-gradient(135deg, var(--cosmic-teal) 0%, var(--neural-gold) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            scroll-behavior: smooth;
         }
         
         .constellation-bg {
@@ -42,42 +37,27 @@
             z-index: -1;
         }
         
-        .glow-effect {
-            box-shadow: 0 0 20px rgba(15, 118, 110, 0.3);
-            transition: all 0.3s ease;
-        }
-        
-        .glow-effect:hover {
-            box-shadow: 0 0 30px rgba(15, 118, 110, 0.5);
-            transform: translateY(-2px);
-        }
-        
-        .neural-pulse {
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-        
-        .scroll-indicator {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: bounce 2s infinite;
-        }
-        
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
-            40% { transform: translateX(-50%) translateY(-10px); }
-            60% { transform: translateX(-50%) translateY(-5px); }
+        .section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 80px 0;
         }
         
         .nav-link {
             position: relative;
             transition: all 0.3s ease;
+            color: var(--light-gray);
+        }
+        
+        .nav-link:hover {
+            color: var(--mit-red);
+        }
+        
+        .nav-link.active {
+            color: var(--mit-red);
         }
         
         .nav-link::after {
@@ -87,20 +67,113 @@
             left: 0;
             width: 0;
             height: 2px;
-            background: var(--cosmic-teal);
+            background: var(--mit-red);
             transition: width 0.3s ease;
         }
         
-        .nav-link:hover::after {
+        .nav-link:hover::after,
+        .nav-link.active::after {
             width: 100%;
         }
         
-        .content-section {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
+        .btn-primary {
+            background: var(--mit-red);
+            color: var(--pure-white);
+            border: 2px solid var(--mit-red);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: transparent;
+            color: var(--mit-red);
+            box-shadow: 0 0 20px rgba(163, 31, 52, 0.3);
+        }
+        
+        .btn-secondary {
+            border: 2px solid var(--pure-white);
+            color: var(--pure-white);
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--pure-white);
+            color: var(--deep-black);
+        }
+        
+        .card {
+            background: rgba(51, 51, 51, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            border-color: var(--mit-red);
+            box-shadow: 0 10px 25px rgba(163, 31, 52, 0.2);
+            transform: translateY(-5px);
+        }
+        
+        .team-card {
+            background: rgba(51, 51, 51, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .team-card:hover {
+            border-color: var(--mit-red);
+            box-shadow: 0 15px 35px rgba(163, 31, 52, 0.3);
+            transform: translateY(-8px);
+        }
+        
+        .upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            background: rgba(51, 51, 51, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .upload-area:hover,
+        .upload-area.dragover {
+            border-color: var(--mit-red);
+            background: rgba(163, 31, 52, 0.1);
+        }
+        
+        .mri-preview {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .placeholder-square {
+            background: rgba(51, 51, 51, 0.5);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: var(--mit-red);
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s ease-in-out;
+        }
+        
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid var(--mit-red);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
         
         .fade-in {
@@ -113,28 +186,121 @@
             opacity: 1;
             transform: translateY(0);
         }
+        
+        .school-badge {
+            background: rgba(51, 51, 51, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--light-gray);
+            transition: all 0.3s ease;
+        }
+        
+        .school-badge:hover {
+            border-color: var(--mit-red);
+            background: rgba(163, 31, 52, 0.1);
+        }
+        
+        .organization-card {
+            background: rgba(51, 51, 51, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .organization-card:hover {
+            background: rgba(51, 51, 51, 0.7);
+            border-color: var(--mit-red);
+            transform: scale(1.02);
+        }
+        
+        .photo-upload {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .photo-upload:hover {
+            transform: scale(1.05);
+        }
+        
+        .photo-upload input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+        
+        .photo-placeholder {
+            background: rgba(51, 51, 51, 0.8);
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.6);
+            transition: all 0.3s ease;
+        }
+        
+        .photo-placeholder:hover {
+            border-color: var(--mit-red);
+            color: var(--mit-red);
+        }
+        
+        .scroll-indicator {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+        }
+        
+        .scroll-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            margin: 8px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .scroll-dot.active {
+            background: var(--mit-red);
+            transform: scale(1.2);
+        }
+        
+        .scroll-dot:hover {
+            background: var(--mit-red);
+        }
     </style>
 </head>
 <body>
     <!-- Constellation Background -->
     <div id="particles-js" class="constellation-bg"></div>
     
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator">
+        <div class="scroll-dot active" data-section="home"></div>
+        <div class="scroll-dot" data-section="about"></div>
+        <div class="scroll-dot" data-section="test"></div>
+        <div class="scroll-dot" data-section="team"></div>
+    </div>
+    
     <!-- Navigation -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-gray-900/80 backdrop-blur-sm border-b border-gray-700/50">
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-sm border-b border-white/10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center space-x-2">
-                    <div class="w-8 h-8 bg-gradient-to-r from-teal-400 to-blue-500 rounded-lg"></div>
+                    <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+                        <span class="text-black font-bold text-sm">SK</span>
+                    </div>
                     <span class="text-xl font-bold">Sin Karkinos</span>
                 </div>
                 <div class="hidden md:flex space-x-8">
-                    <a href="#home" class="nav-link text-gray-300 hover:text-white">Home</a>
-                    <a href="about.html" class="nav-link text-gray-300 hover:text-white">About</a>
-                    <a href="test.html" class="nav-link text-gray-300 hover:text-white">Test</a>
-                    <a href="credits.html" class="nav-link text-gray-300 hover:text-white">Team</a>
+                    <a href="#home" class="nav-link active">Home</a>
+                    <a href="#about" class="nav-link">About</a>
+                    <a href="#test" class="nav-link">Test</a>
+                    <a href="#team" class="nav-link">Team</a>
                 </div>
                 <div class="md:hidden">
-                    <button id="mobile-menu-btn" class="text-gray-300 hover:text-white">
+                    <button id="mobile-menu-btn" class="text-white hover:text-red-400">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                         </svg>
@@ -143,21 +309,21 @@
             </div>
         </div>
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-sm">
+        <div id="mobile-menu" class="hidden md:hidden bg-black/95 backdrop-blur-sm">
             <div class="px-2 pt-2 pb-3 space-y-1">
-                <a href="#home" class="block px-3 py-2 text-gray-300 hover:text-white">Home</a>
-                <a href="about.html" class="block px-3 py-2 text-gray-300 hover:text-white">About</a>
-                <a href="test.html" class="block px-3 py-2 text-gray-300 hover:text-white">Test</a>
-                <a href="credits.html" class="block px-3 py-2 text-gray-300 hover:text-white">Team</a>
+                <a href="#home" class="block px-3 py-2 text-white hover:text-red-400">Home</a>
+                <a href="#about" class="block px-3 py-2 text-white hover:text-red-400">About</a>
+                <a href="#test" class="block px-3 py-2 text-white hover:text-red-400">Test</a>
+                <a href="#team" class="block px-3 py-2 text-white hover:text-red-400">Team</a>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section id="home" class="content-section">
+    <!-- Home Section -->
+    <section id="home" class="section">
         <div class="text-center z-10 max-w-4xl mx-auto px-4">
             <div class="mb-8">
-                <h1 class="text-6xl md:text-8xl font-black mb-6 hero-gradient">
+                <h1 class="text-6xl md:text-8xl font-black mb-6 text-white">
                     <span id="typed-text"></span>
                 </h1>
                 <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
@@ -167,51 +333,44 @@
             </div>
             
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-                <button onclick="scrollToSection('about')" class="glow-effect bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700 px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300">
+                <button onclick="scrollToSection('about')" class="btn-primary px-8 py-4 rounded-lg text-lg font-semibold">
                     Discover Our Mission
                 </button>
-                <button onclick="window.location.href='test.html'" class="border-2 border-teal-400 text-teal-400 hover:bg-teal-400 hover:text-gray-900 px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300">
-                    Try Detection Tool
+                <button onclick="scrollToSection('test')" class="btn-secondary px-8 py-4 rounded-lg text-lg font-semibold">
+                    Try it out!
                 </button>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
                 <div class="fade-in">
-                    <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700/50">
-                        <div class="text-3xl font-bold text-teal-400 mb-2 neural-pulse">94.5%</div>
+                    <div class="card rounded-xl p-6">
+                        <div class="text-3xl font-bold text-white mb-2">99.6%</div>
                         <div class="text-gray-300">Detection Accuracy</div>
                     </div>
                 </div>
                 <div class="fade-in">
-                    <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700/50">
-                        <div class="text-3xl font-bold text-amber-400 mb-2 neural-pulse">CNN</div>
+                    <div class="card rounded-xl p-6">
+                        <div class="text-3xl font-bold text-white mb-2">CNN</div>
                         <div class="text-gray-300">Advanced Architecture</div>
                     </div>
                 </div>
                 <div class="fade-in">
-                    <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700/50">
-                        <div class="text-3xl font-bold text-blue-400 mb-2 neural-pulse">AI</div>
-                        <div class="text-gray-300">Powered Analysis</div>
+                    <div class="card rounded-xl p-6">
+                        <div class="text-3xl font-bold text-white mb-2">Computational</div>
+                        <div class="text-gray-300">Analysis</div>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <!-- Scroll Indicator -->
-        <div class="scroll-indicator">
-            <svg class="w-6 h-6 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-            </svg>
-        </div>
     </section>
 
-    <!-- About Preview Section -->
-    <section class="content-section py-20">
+    <!-- About Section -->
+    <section id="about" class="section">
         <div class="max-w-6xl mx-auto px-4">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div class="fade-in">
-                    <h2 class="text-4xl md:text-5xl font-bold mb-6">
-                        <span class="hero-gradient">Sin Karkinos</span>
+                    <h2 class="text-4xl font-bold mb-6 text-white">
+                        <span class="text-red-400">Sin Karkinos</span>
                     </h2>
                     <p class="text-lg text-gray-300 mb-6 leading-relaxed">
                         Our revolutionary CNN-based system represents a breakthrough in medical AI, 
@@ -221,26 +380,443 @@
                         By combining cutting-edge machine learning with accessible web technology, 
                         we're making advanced medical detection available to healthcare providers worldwide.
                     </p>
-                    <button onclick="window.location.href='about.html'" class="glow-effect bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700 px-6 py-3 rounded-lg font-semibold transition-all duration-300">
-                        Learn More About Our Technology
+                    <div class="flex flex-wrap gap-4 mb-8">
+                        <div class="bg-gray-800 rounded-lg px-4 py-2 border border-gray-600">
+                            <span class="text-red-400 font-semibold">99.6%</span>
+                            <span class="text-gray-300 ml-2">Accuracy</span>
+                        </div>
+                        <div class="bg-gray-800 rounded-lg px-4 py-2 border border-gray-600">
+                            <span class="text-white font-semibold">CNN</span>
+                            <span class="text-gray-300 ml-2">Architecture</span>
+                        </div>
+                        <div class="bg-gray-800 rounded-lg px-4 py-2 border border-gray-600">
+                            <span class="text-gray-300 font-semibold">Real-time</span>
+                            <span class="text-gray-300 ml-2">Analysis</span>
+                        </div>
+                    </div>
+                    <button onclick="scrollToSection('test')" class="btn-primary px-6 py-3 rounded-lg font-semibold">
+                        Try it out
                     </button>
                 </div>
                 <div class="fade-in">
                     <div class="relative">
                         <img src="resources/neural-network.png" alt="Neural Network Visualization" class="w-full h-auto rounded-xl shadow-2xl">
-                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900/50 to-transparent rounded-xl"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-xl"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Technology Stack -->
+            <div class="mt-20">
+                <h3 class="text-3xl font-bold text-center mb-12 text-white">Our Technology</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="card rounded-xl p-6 fade-in">
+                        <div class="w-12 h-12 bg-white rounded-lg mb-4 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                            </svg>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3 text-white">CNN Architecture</h4>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Advanced convolutional neural networks specifically designed for medical image analysis, 
+                            with multiple layers for feature extraction and pattern recognition.
+                        </p>
+                    </div>
+
+                    <div class="card rounded-xl p-6 fade-in">
+                        <div class="w-12 h-12 bg-white rounded-lg mb-4 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3 text-white">Real-time Processing</h4>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Optimized for rapid analysis with sub-second response times, enabling immediate 
+                            feedback for medical professionals during diagnostic procedures.
+                        </p>
+                    </div>
+
+                    <div class="card rounded-xl p-6 fade-in">
+                        <div class="w-12 h-12 bg-white rounded-lg mb-4 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                            </svg>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3 text-white">Explainable Grad-CAM</h4>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Advanced visualization technique that highlights regions of interest, providing 
+                            transparent reasoning behind detection results for clinical validation.
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Test Section -->
+    <section id="test" class="section">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-6xl font-black mb-6 text-white">
+                    MRI Detection Tool
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Upload an MRI scan to experience our AI-powered brain tumor detection system
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                <!-- MRI Preview Panel -->
+                <div class="space-y-6">
+                    <h3 class="text-2xl font-bold text-white mb-4">MRI Preview</h3>
+                    <div class="relative">
+                        <img id="mri-preview" src="resources/mri-placeholder.png" alt="MRI Preview" 
+                             class="mri-preview w-full h-96 object-cover">
+                        <div id="mri-placeholder" class="placeholder-square w-full h-96 hidden">
+                            <div>
+                                <svg class="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                <p>Upload an MRI image to begin analysis</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Image Info -->
+                    <div id="image-info" class="card rounded-lg p-4 hidden">
+                        <h4 class="font-semibold text-white mb-2">Image Information</h4>
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <span class="text-gray-400">Format:</span>
+                                <span id="image-format" class="ml-2 text-white">-</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-400">Size:</span>
+                                <span id="image-size" class="ml-2 text-white">-</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-400">Dimensions:</span>
+                                <span id="image-dimensions" class="ml-2 text-white">-</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-400">Upload Time:</span>
+                                <span id="upload-time" class="ml-2 text-white">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Control Panel -->
+                <div class="space-y-6">
+                    <h3 class="text-2xl font-bold text-white mb-4">Analysis Controls</h3>
+                    
+                    <!-- Upload Area -->
+                    <div id="upload-area" class="upload-area rounded-xl p-8 text-center cursor-pointer">
+                        <input type="file" id="mri-upload" accept="image/*" class="hidden">
+                        <div class="space-y-4">
+                            <svg class="w-16 h-16 mx-auto text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                            </svg>
+                            <div>
+                                <p class="text-lg font-semibold text-white">Drop MRI image here</p>
+                                <p class="text-gray-500">or click to browse files</p>
+                            </div>
+                            <p class="text-sm text-gray-600">Supports JPG, PNG, DICOM formats</p>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="space-y-4">
+                        <button id="scan-btn" disabled 
+                                class="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed px-6 py-4 rounded-lg text-lg font-semibold">
+                            <span id="scan-btn-text">Upload Image to Enable Scan</span>
+                        </button>
+                        
+                        <button id="reset-btn" 
+                                class="w-full btn-secondary px-6 py-3 rounded-lg font-semibold">
+                            Reset Interface
+                        </button>
+                    </div>
+
+                    <!-- Quick Sample Images -->
+                    <div class="card rounded-lg p-4">
+                        <h4 class="font-semibold text-white mb-3">Try Sample Images</h4>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="loadSampleImage('glioma')" class="bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded text-sm transition-colors">
+                                Glioma Sample
+                            </button>
+                            <button onclick="loadSampleImage('meningioma')" class="bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded text-sm transition-colors">
+                                Meningioma Sample
+                            </button>
+                            <button onclick="loadSampleImage('pituitary')" class="bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded text-sm transition-colors">
+                                Pituitary Sample
+                            </button>
+                            <button onclick="loadSampleImage('healthy')" class="bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded text-sm transition-colors">
+                                Healthy Brain
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loading-state" class="hidden text-center py-12">
+                <div class="inline-flex items-center space-x-3 card rounded-xl px-8 py-6">
+                    <div class="loading-spinner w-8 h-8 rounded-full"></div>
+                    <div class="text-left">
+                        <h3 class="text-lg font-semibold text-white">Analyzing MRI Scan</h3>
+                        <p class="text-gray-400">Processing image through CNN architecture...</p>
+                    </div>
+                </div>
+                <div class="mt-6 max-w-md mx-auto">
+                    <div class="progress-bar h-2">
+                        <div id="progress-bar" class="progress-fill transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                    <p id="progress-text" class="text-sm text-gray-400 mt-2">Initializing analysis...</p>
+                </div>
+            </div>
+
+            <!-- Detection Results -->
+            <div id="detection-results" class="hidden">
+                <!-- Results will be populated by JavaScript -->
+            </div>
+
+            <!-- Technical Information -->
+            <div class="mt-16 card rounded-xl p-8">
+                <h3 class="text-2xl font-bold text-white mb-6">How It Works</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-2xl font-bold text-black">1</span>
+                        </div>
+                        <h4 class="text-lg font-semibold mb-2 text-white">Image Preprocessing</h4>
+                        <p class="text-gray-400 text-sm">MRI scan is normalized and enhanced for optimal CNN analysis</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-2xl font-bold text-black">2</span>
+                        </div>
+                        <h4 class="text-lg font-semibold mb-2 text-white">Neural Network Analysis</h4>
+                        <p class="text-gray-400 text-sm">Multi-layer CNN extracts features and identifies patterns</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-2xl font-bold text-black">3</span>
+                        </div>
+                        <h4 class="text-lg font-semibold mb-2 text-white">Results & Visualization</h4>
+                        <p class="text-gray-400 text-sm">Detection results with confidence scores and visual highlights</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team" class="section">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-6 text-white">Our Team</h2>
+                <p class="text-xl text-gray-300">The brilliant minds driving medical AI innovation</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+                <!-- Luan Hoang -->
+                <div class="team-card rounded-xl p-6 text-center fade-in">
+                    <div class="photo-upload w-24 h-24 rounded-full mx-auto mb-4" onclick="uploadTeamPhoto('luan')">
+                        <input type="file" id="photo-luan" accept="image/*" class="hidden">
+                        <div id="photo-luan-preview" class="photo-placeholder w-full h-full rounded-full">
+                            <span class="text-2xl font-bold">LH</span>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-white">Luan Hoang</h3>
+                    <p class="text-gray-300 mb-4">Lead AI Researcher</p>
+                    <div class="school-badge rounded-lg px-3 py-2 text-sm mb-4">
+                        Hazelwood West High School
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Specializes in convolutional neural networks and medical image processing. 
+                        Passionate about making AI accessible for healthcare applications.
+                    </p>
+                </div>
+
+                <!-- Keven Ariel Amaya Muñoz -->
+                <div class="team-card rounded-xl p-6 text-center fade-in">
+                    <div class="photo-upload w-24 h-24 rounded-full mx-auto mb-4" onclick="uploadTeamPhoto('keven')">
+                        <input type="file" id="photo-keven" accept="image/*" class="hidden">
+                        <div id="photo-keven-preview" class="photo-placeholder w-full h-full rounded-full">
+                            <span class="text-2xl font-bold">KA</span>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-white">Keven Ariel Amaya Muñoz</h3>
+                    <p class="text-gray-300 mb-4">Backend Developer</p>
+                    <div class="school-badge rounded-lg px-3 py-2 text-sm mb-4">
+                        Charles Herbert Flowers High School
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Expert in cloud infrastructure and API development. Ensures seamless 
+                        integration between AI models and web applications.
+                    </p>
+                </div>
+
+                <!-- Arko Barua -->
+                <div class="team-card rounded-xl p-6 text-center fade-in">
+                    <div class="photo-upload w-24 h-24 rounded-full mx-auto mb-4" onclick="uploadTeamPhoto('arko')">
+                        <input type="file" id="photo-arko" accept="image/*" class="hidden">
+                        <div id="photo-arko-preview" class="photo-placeholder w-full h-full rounded-full">
+                            <span class="text-2xl font-bold">AB</span>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-white">Arko Barua</h3>
+                    <p class="text-gray-300 mb-4">Frontend Developer</p>
+                    <div class="school-badge rounded-lg px-3 py-2 text-sm mb-4">
+                        Plano East Senior High School
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Creates intuitive user interfaces and interactive experiences. 
+                        Focuses on making complex medical technology accessible to all users.
+                    </p>
+                </div>
+
+                <!-- Mentor Placeholder -->
+                <div class="team-card rounded-xl p-6 text-center fade-in">
+                    <div class="photo-upload w-24 h-24 rounded-full mx-auto mb-4" onclick="uploadTeamPhoto('dan')">
+                        <input type="file" id="photo-dan" accept="image/*" class="hidden">
+                        <div id="photo-dan-preview" class="photo-placeholder w-full h-full rounded-full">
+                            <span class="text-2xl font-bold">DD</span>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-white">Dan DeGenaro</h3>
+                    <p class="text-gray-300 mb-4">Project Mentor</p>
+                    <div class="school-badge rounded-lg px-3 py-2 text-sm mb-4">
+                        MIT Affiliate
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Provides guidance on medical AI applications and ensures clinical 
+                        relevance of our detection algorithms and user interfaces.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Special Thanks -->
+            <div class="text-center mb-16">
+                <h3 class="text-4xl font-bold mb-6 text-white">Special Thanks</h3>
+                <p class="text-xl text-gray-300 mb-12">To the organizations that made this project possible</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- ImageNet -->
+                    <div class="organization-card rounded-xl p-6 text-center fade-in">
+                        <div class="w-16 h-16 bg-white rounded-lg mx-auto mb-4 flex items-center justify-center">
+                            <svg class="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
+                            </svg>
+                        </div>
+                        <h4 class="text-xl font-bold mb-2 text-white">ImageNet</h4>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Provided the foundational dataset for training our computer vision models, 
+                            enabling robust feature extraction capabilities.
+                        </p>
+                    </div>
+
+                    <!-- MIT -->
+                    <div class="organization-card rounded-xl p-6 text-center fade-in">
+                        <div class="w-16 h-16 bg-red-600 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path>
+                            </svg>
+                        </div>
+                        <h4 class="text-xl font-bold mb-2 text-white">MIT</h4>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Massachusetts Institute of Technology provided research resources and 
+                            academic guidance for our machine learning architecture development.
+                        </p>
+                    </div>
+
+                    <!-- NVIDIA -->
+                    <div class="organization-card rounded-xl p-6 text-center fade-in">
+                        <div class="w-16 h-16 bg-white rounded-lg mx-auto mb-4 flex items-center justify-center">
+                            <svg class="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                        </div>
+                        <h4 class="text-xl font-bold mb-2 text-white">NVIDIA</h4>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            GPU computing resources and CUDA optimization tools that accelerated 
+                            our model training and inference performance.
+                        </p>
+                    </div>
+
+                    <!-- EfficientNet-B4 -->
+                    <div class="organization-card rounded-xl p-6 text-center fade-in">
+                        <div class="w-16 h-16 bg-white rounded-lg mx-auto mb-4 flex items-center justify-center">
+                            <svg class="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                            </svg>
+                        </div>
+                        <h4 class="text-xl font-bold mb-2 text-white">EfficientNet-B4</h4>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Google's advanced CNN architecture that served as the foundation for 
+                            our optimized medical imaging detection system.
+                        </p>
+                    </div>
+
+                    <!-- MITES -->
+                    <div class="organization-card rounded-xl p-6 text-center fade-in">
+                        <div class="w-16 h-16 bg-red-600 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                        </div>
+                        <h4 class="text-xl font-bold mb-2 text-white">MITES</h4>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            MIT Introduction to Technology, Engineering, and Science program that 
+                            provided educational foundation and research opportunities.
+                        </p>
+                    </div>
+
+                    <!-- Additional Support -->
+                    <div class="organization-card rounded-xl p-6 text-center fade-in">
+                        <div class="w-16 h-16 bg-white rounded-lg mx-auto mb-4 flex items-center justify-center">
+                            <svg class="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                        </div>
+                        <h4 class="text-xl font-bold mb-2 text-white">Community Support</h4>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Open source contributors, healthcare professionals, and AI researchers 
+                            who provided feedback and testing throughout development.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="text-center">
+                <h3 class="text-4xl font-bold mb-8 text-white">Get In Touch</h3>
+                <p class="text-xl text-gray-300 mb-8">
+                    Interested in collaborating or learning more about Sin Karkinos?
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button onclick="window.open('https://github.com', '_blank')" 
+                            class="btn-primary px-8 py-4 rounded-lg text-lg font-semibold">
+                        View on GitHub
+                    </button>
+                    <button onclick="scrollToSection('test')" 
+                            class="btn-secondary px-8 py-4 rounded-lg text-lg font-semibold">
+                        Try Detection Tool
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
-    <footer class="bg-gray-900/80 backdrop-blur-sm border-t border-gray-700/50 py-8">
+    <footer class="bg-black/90 backdrop-blur-sm border-t border-white/10 py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="flex items-center space-x-2 mb-4 md:mb-0">
-                    <div class="w-6 h-6 bg-gradient-to-r from-teal-400 to-blue-500 rounded"></div>
+                    <div class="w-6 h-6 bg-white rounded flex items-center justify-center">
+                        <span class="text-black font-bold text-xs">SK</span>
+                    </div>
                     <span class="text-lg font-semibold">Sin Karkinos</span>
                 </div>
                 <div class="flex space-x-6">
@@ -258,5 +834,105 @@
     </footer>
 
     <script src="main.js"></script>
+    <script>
+        // Initialize page-specific functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize fade-in animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.fade-in').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Reset button functionality
+            document.getElementById('reset-btn').addEventListener('click', function() {
+                location.reload();
+            });
+
+            // Scroll indicator functionality
+            const scrollDots = document.querySelectorAll('.scroll-dot');
+            const sections = document.querySelectorAll('.section');
+
+            scrollDots.forEach(dot => {
+                dot.addEventListener('click', () => {
+                    const sectionId = dot.getAttribute('data-section');
+                    const section = document.getElementById(sectionId);
+                    if (section) {
+                        section.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+
+            // Update active scroll dot on scroll
+            window.addEventListener('scroll', () => {
+                const scrollPosition = window.scrollY + window.innerHeight / 2;
+                
+                sections.forEach((section, index) => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.offsetHeight;
+                    
+                    if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                        scrollDots.forEach(dot => dot.classList.remove('active'));
+                        if (scrollDots[index]) {
+                            scrollDots[index].classList.add('active');
+                        }
+                    }
+                });
+            });
+
+            // Navigation link functionality
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const sectionId = link.getAttribute('href').substring(1);
+                    const section = document.getElementById(sectionId);
+                    if (section) {
+                        section.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+        });
+
+        // Team photo upload functionality
+        function uploadTeamPhoto(member) {
+            const input = document.getElementById(`photo-${member}`);
+            const preview = document.getElementById(`photo-${member}-preview`);
+            
+            input.click();
+            
+            input.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.innerHTML = `<img src="${e.target.result}" alt="${member}" class="w-full h-full rounded-full object-cover">`;
+                        preview.classList.remove('photo-placeholder');
+                        preview.style.border = 'none';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // Global scroll function
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    </script>
 </body>
 </html>

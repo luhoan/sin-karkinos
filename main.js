@@ -1,4 +1,4 @@
-// Sin Karkinos - Main JavaScript File
+// Sin Karkinos - Main JavaScript File (Single Page Version)
 const SinKarkinos = {
     init: function() {
         this.setupParticles();
@@ -7,21 +7,22 @@ const SinKarkinos = {
         this.setupNavigation();
         this.setupMobileMenu();
         this.setupFadeInAnimations();
+        this.setupDetectionSystem();
     },
 
     setupParticles: function() {
-        // Constellation background configuration
+        // Monochrome constellation background configuration
         particlesJS('particles-js', {
             particles: {
                 number: {
-                    value: 150,
+                    value: 200,
                     density: {
                         enable: true,
                         value_area: 800
                     }
                 },
                 color: {
-                    value: ['#ffffff', '#0F766E', '#1E3A8A', '#F8FAFC']
+                    value: '#FFFFFF' // Pure white stars
                 },
                 shape: {
                     type: 'circle',
@@ -36,34 +37,34 @@ const SinKarkinos = {
                     anim: {
                         enable: true,
                         speed: 1,
-                        opacity_min: 0.1,
+                        opacity_min: 0.3,
                         sync: false
                     }
                 },
                 size: {
-                    value: 3,
+                    value: 2,
                     random: true,
                     anim: {
                         enable: true,
                         speed: 2,
-                        size_min: 0.1,
+                        size_min: 0.5,
                         sync: false
                     }
                 },
                 line_linked: {
                     enable: true,
-                    distance: 150,
-                    color: '#0F766E',
-                    opacity: 0.4,
+                    distance: 120,
+                    color: '#FFFFFF',
+                    opacity: 0.2,
                     width: 1,
                     consent: {
-                        distance: 100,
-                        opacity: 0.5
+                        distance: 80,
+                        opacity: 0.3
                     }
                 },
                 move: {
                     enable: true,
-                    speed: 1,
+                    speed: 0.5,
                     direction: 'none',
                     random: true,
                     straight: false,
@@ -104,7 +105,7 @@ const SinKarkinos = {
                         speed: 3
                     },
                     repulse: {
-                        distance: 200,
+                        distance: 150,
                         duration: 0.4
                     },
                     push: {
@@ -152,40 +153,43 @@ const SinKarkinos = {
             });
         });
 
-        // Parallax effect for particles
+        // Update active navigation on scroll
         window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const parallax = document.querySelector('#particles-js');
-            const speed = scrolled * 0.5;
-            parallax.style.transform = `translateY(${speed}px)`;
-        });
-    },
-
-    setupNavigation: function() {
-        // Navigation highlight on scroll
-        const sections = document.querySelectorAll('section[id]');
-        const navLinks = document.querySelectorAll('.nav-link');
-
-        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const scrollDots = document.querySelectorAll('.scroll-dot');
+            
             let current = '';
+            const scrollPosition = window.scrollY + window.innerHeight / 2;
+            
             sections.forEach(section => {
                 const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                if (scrollY >= sectionTop - 200) {
+                const sectionHeight = section.offsetHeight;
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
                     current = section.getAttribute('id');
                 }
             });
 
+            // Update navigation links
             navLinks.forEach(link => {
-                link.classList.remove('text-teal-400');
+                link.classList.remove('active');
                 if (link.getAttribute('href') === `#${current}`) {
-                    link.classList.add('text-teal-400');
+                    link.classList.add('active');
+                }
+            });
+
+            // Update scroll dots
+            scrollDots.forEach(dot => {
+                dot.classList.remove('active');
+                if (dot.getAttribute('data-section') === current) {
+                    dot.classList.add('active');
                 }
             });
         });
     },
 
-    setupMobileMenu: function() {
+    setupNavigation: function() {
+        // Mobile menu functionality
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
 
@@ -202,6 +206,16 @@ const SinKarkinos = {
                 });
             });
         }
+    },
+
+    setupMobileMenu: function() {
+        // Handle mobile menu visibility on resize
+        window.addEventListener('resize', () => {
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (window.innerWidth >= 768) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
     },
 
     setupFadeInAnimations: function() {
@@ -223,19 +237,15 @@ const SinKarkinos = {
         document.querySelectorAll('.fade-in').forEach(el => {
             observer.observe(el);
         });
+    },
+
+    setupDetectionSystem: function() {
+        // Initialize detection system after DOM is loaded
+        if (document.getElementById('mri-upload')) {
+            DetectionSystem.init();
+        }
     }
 };
-
-// Global functions for button interactions
-function scrollToSection(sectionId) {
-    const element = document.getElementById(sectionId);
-    if (element) {
-        element.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-        });
-    }
-}
 
 // MRI Upload and Detection Simulation
 const DetectionSystem = {
@@ -260,16 +270,16 @@ const DetectionSystem = {
             // Drag and drop
             uploadArea.addEventListener('dragover', (e) => {
                 e.preventDefault();
-                uploadArea.classList.add('border-teal-400', 'bg-teal-400/10');
+                uploadArea.classList.add('dragover');
             });
 
             uploadArea.addEventListener('dragleave', () => {
-                uploadArea.classList.remove('border-teal-400', 'bg-teal-400/10');
+                uploadArea.classList.remove('dragover');
             });
 
             uploadArea.addEventListener('drop', (e) => {
                 e.preventDefault();
-                uploadArea.classList.remove('border-teal-400', 'bg-teal-400/10');
+                uploadArea.classList.remove('dragover');
                 const files = e.dataTransfer.files;
                 if (files.length > 0) {
                     this.handleFileUpload(files[0]);
@@ -300,10 +310,25 @@ const DetectionSystem = {
                     
                     // Enable scan button
                     const scanBtn = document.getElementById('scan-btn');
+                    const scanBtnText = document.getElementById('scan-btn-text');
                     if (scanBtn) {
                         scanBtn.disabled = false;
                         scanBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                        scanBtn.classList.add('glow-effect');
+                        scanBtnText.textContent = 'Scan MRI for Analysis';
+                    }
+                    
+                    // Update image info
+                    this.updateImageInfo({
+                        format: file.type.split('/')[1].toUpperCase(),
+                        size: this.formatFileSize(file.size),
+                        dimensions: 'Loading...',
+                        time: new Date().toLocaleTimeString()
+                    });
+                    
+                    // Show image info
+                    const imageInfo = document.getElementById('image-info');
+                    if (imageInfo) {
+                        imageInfo.classList.remove('hidden');
                     }
                 }
             };
@@ -328,31 +353,59 @@ const DetectionSystem = {
 
     simulateDetection: function() {
         const scanBtn = document.getElementById('scan-btn');
+        const scanBtnText = document.getElementById('scan-btn-text');
         const resultsDiv = document.getElementById('detection-results');
         const loadingDiv = document.getElementById('loading-state');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
 
         // Show loading state
         scanBtn.disabled = true;
-        scanBtn.innerHTML = `
-            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            Analyzing...
+        scanBtnText.innerHTML = `
+            <div class="flex items-center justify-center space-x-2">
+                <div class="loading-spinner w-5 h-5 rounded-full"></div>
+                <span>Analyzing...</span>
+            </div>
         `;
 
         if (loadingDiv) {
             loadingDiv.classList.remove('hidden');
         }
 
-        // Simulate API call delay
-        setTimeout(() => {
-            this.showResults();
-        }, 3000);
+        // Simulate progress
+        let progress = 0;
+        const progressInterval = setInterval(() => {
+            progress += Math.random() * 15 + 5;
+            if (progress > 100) progress = 100;
+            
+            if (progressBar) {
+                progressBar.style.width = progress + '%';
+            }
+            
+            if (progressText) {
+                if (progress < 30) {
+                    progressText.textContent = 'Initializing analysis...';
+                } else if (progress < 60) {
+                    progressText.textContent = 'Processing neural network layers...';
+                } else if (progress < 90) {
+                    progressText.textContent = 'Analyzing features and patterns...';
+                } else {
+                    progressText.textContent = 'Generating results...';
+                }
+            }
+            
+            if (progress >= 100) {
+                clearInterval(progressInterval);
+                setTimeout(() => {
+                    this.showResults();
+                }, 500);
+            }
+        }, 100);
     },
 
     showResults: function() {
         const scanBtn = document.getElementById('scan-btn');
+        const scanBtnText = document.getElementById('scan-btn-text');
         const resultsDiv = document.getElementById('detection-results');
         const loadingDiv = document.getElementById('loading-state');
 
@@ -371,28 +424,34 @@ const DetectionSystem = {
         // Show results
         if (resultsDiv) {
             resultsDiv.innerHTML = `
-                <div class="bg-gray-800/80 backdrop-blur-sm rounded-xl p-6 border border-gray-700/50">
-                    <h3 class="text-xl font-bold mb-4 text-teal-400">Detection Results</h3>
-                    <div class="space-y-3">
-                        <div class="flex justify-between">
+                <div class="card rounded-xl p-6 max-w-2xl mx-auto">
+                    <h3 class="text-xl font-bold mb-4 text-white text-center">Detection Results</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
                             <span class="text-gray-300">Status:</span>
                             <span class="font-semibold ${detection === 'Tumor Detected' ? 'text-red-400' : 'text-green-400'}">${detection}</span>
                         </div>
-                        <div class="flex justify-between">
+                        <div class="flex justify-between items-center">
                             <span class="text-gray-300">Confidence:</span>
-                            <span class="font-semibold text-blue-400">${confidence}%</span>
+                            <span class="font-semibold text-white">${confidence}%</span>
                         </div>
                         ${detection === 'Tumor Detected' ? `
-                        <div class="flex justify-between">
+                        <div class="flex justify-between items-center">
                             <span class="text-gray-300">Type:</span>
-                            <span class="font-semibold text-amber-400">${tumorType}</span>
+                            <span class="font-semibold text-white">${tumorType}</span>
                         </div>
                         ` : ''}
                     </div>
-                    <div class="mt-4">
-                        <div class="w-full bg-gray-700 rounded-full h-2">
-                            <div class="bg-gradient-to-r from-teal-400 to-blue-500 h-2 rounded-full transition-all duration-1000" style="width: ${confidence}%"></div>
+                    <div class="mt-6">
+                        <div class="progress-bar h-3">
+                            <div class="progress-fill transition-all duration-1000" style="width: ${confidence}%"></div>
                         </div>
+                        <p class="text-sm text-gray-400 mt-2 text-center">Confidence Level</p>
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button onclick="DetectionSystem.resetAnalysis()" class="btn-primary px-6 py-2 rounded-lg font-semibold">
+                            Scan Another Image
+                        </button>
                     </div>
                 </div>
             `;
@@ -401,27 +460,95 @@ const DetectionSystem = {
 
         // Reset scan button
         scanBtn.disabled = false;
-        scanBtn.innerHTML = 'Scan Another Image';
-        scanBtn.classList.remove('glow-effect');
+        scanBtnText.textContent = 'Scan Another Image';
+    },
+
+    resetAnalysis: function() {
+        const resultsDiv = document.getElementById('detection-results');
+        const scanBtn = document.getElementById('scan-btn');
+        const scanBtnText = document.getElementById('scan-btn-text');
+        
+        if (resultsDiv) {
+            resultsDiv.classList.add('hidden');
+        }
+        
+        scanBtn.disabled = true;
+        scanBtnText.textContent = 'Upload Image to Enable Scan';
+        this.currentFile = null;
+    },
+
+    updateImageInfo: function(info) {
+        const formatElement = document.getElementById('image-format');
+        const sizeElement = document.getElementById('image-size');
+        const dimensionsElement = document.getElementById('image-dimensions');
+        const timeElement = document.getElementById('upload-time');
+
+        if (formatElement) formatElement.textContent = info.format;
+        if (sizeElement) sizeElement.textContent = info.size;
+        if (dimensionsElement) dimensionsElement.textContent = info.dimensions;
+        if (timeElement) timeElement.textContent = info.time;
+    },
+
+    formatFileSize: function(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
 };
+
+// Sample image data for demonstration
+const sampleImages = {
+    glioma: 'resources/mri-placeholder.png',
+    meningioma: 'resources/mri-placeholder.png',
+    pituitary: 'resources/mri-placeholder.png',
+    healthy: 'resources/mri-placeholder.png'
+};
+
+function loadSampleImage(type) {
+    const preview = document.getElementById('mri-preview');
+    const placeholder = document.getElementById('mri-placeholder');
+    
+    preview.src = sampleImages[type];
+    preview.classList.remove('hidden');
+    placeholder.classList.add('hidden');
+    
+    // Enable scan button
+    const scanBtn = document.getElementById('scan-btn');
+    const scanBtnText = document.getElementById('scan-btn-text');
+    if (scanBtn) {
+        scanBtn.disabled = false;
+        scanBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        scanBtnText.textContent = 'Scan MRI for Analysis';
+    }
+    
+    // Update image info
+    DetectionSystem.updateImageInfo({
+        format: 'PNG',
+        size: '2.4 MB',
+        dimensions: '512×512',
+        time: new Date().toLocaleTimeString()
+    });
+    
+    // Show image info
+    const imageInfo = document.getElementById('image-info');
+    if (imageInfo) {
+        imageInfo.classList.remove('hidden');
+    }
+    
+    DetectionSystem.currentFile = { name: `${type}_sample.png`, type: 'image/png' };
+}
+
+// Global scroll function for button clicks
+function scrollToSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+    }
+}
 
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     SinKarkinos.init();
-    DetectionSystem.init();
-});
-
-// Smooth page transitions
-function navigateToPage(url) {
-    document.body.style.opacity = '0';
-    setTimeout(() => {
-        window.location.href = url;
-    }, 300);
-}
-
-// Add page transition styles
-document.addEventListener('DOMContentLoaded', function() {
-    document.body.style.transition = 'opacity 0.3s ease';
-    document.body.style.opacity = '1';
 });
